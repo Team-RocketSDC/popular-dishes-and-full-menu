@@ -1,4 +1,4 @@
-//this script will create an array of urls to the images i want, save to a file as a list of 1000 unique picture urls
+//this script will save 1000 unique pictures to a directory called imageDirectory
 //need images of size: 175 px width and 120 px height
 const path = require('path');
 const fs = require('fs');
@@ -17,7 +17,7 @@ for (var i = 1; i <= 1000; i++) {
       if (err) {
         console.log(err);
       } else {
-        console.log(`yay Image ${i} written to images/${imageName}`);
+        console.log(`yay Image ${i} written to imageDirectory/${imageName}`);
       }
     })
   }, timeout);
