@@ -110,7 +110,7 @@ app.delete('/restaurants', (request, response) => {
       response.status(200).send('yay!');
     }
   })
-})
+});
 
 app.listen(2000, () => {
   console.log('listening on port 2000');
