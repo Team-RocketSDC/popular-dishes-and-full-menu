@@ -31,6 +31,3 @@ bundle.js
 spec/components/subtract.test.js
 client/src/components/subtract.js 
 
-# ignore generated data
-*.csv
-
