@@ -1,4 +1,3 @@
-//this script will save 1000 unique pictures to a directory called imageDirectory
 //need images of size: 175 px width and 120 px height
 const path = require('path');
 const fs = require('fs');
