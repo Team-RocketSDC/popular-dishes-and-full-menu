@@ -9,7 +9,7 @@ stream.on('error', (err) => {
   if (err) {
     console.log(err);
   }
-})
+});
 
 var restaurantCSV = 'Id,Name';
 var i = 1;
