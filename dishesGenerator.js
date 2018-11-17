@@ -17,7 +17,7 @@ while (i < 10000001) {
     stream.write(dishes);
     dishes = '';
   }
-  dishes += '\n' + i + ',' + faker.commerce.productName() + ',' + '$' + faker.finance.amount(1, 20, 2) + ',' + faker.hacker.phrase() + ',' + faker.random.number({min: 0, max: 100});
+  dishes += '\n' + i + ',' + faker.commerce.productName() + ',' + '$' + faker.finance.amount(1, 20, 2) + ',"' + faker.hacker.phrase() + '",' + faker.random.number({min: 0, max: 100});
   i++;
 }
 
