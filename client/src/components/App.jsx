@@ -6,7 +6,54 @@ import axios from 'axios';
 import styled from 'styled-components';
 import $ from 'jquery';
 
-//*******STYLING *********************************/
+const FullMenu = styled.div`
+  font-family: arial;
+  font-size: 14px;
+  color: #0073bb;
+  vertical-align: bottom;
+  /* position: fixed; */
+  /* right: 75px;     */
+  `;
+FullMenu.displayName = 'FullMenu';
+
+const TitleMenuContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  /* position: fixed; */
+  flex-direction: row;
+  justify-content: space-between;
+`;
+TitleMenuContainer.displayName = 'TitleMenuContainer';
+
+const FullMenuAndArrowsContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+const ArrowsContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background-color: white;
+`;
+const LeftArrow = styled.button`
+  height: 20px;
+  width: 30px;
+  padding-left: 2px;
+  border: none;
+  outline: none;
+`;
+LeftArrow.displayName = 'LeftArrow';
+const RightArrow = styled.button`
+  height: 20px;
+  width: 30px;
+  border: none;
+  /* position: fixed; */
+  /* right: 40px; */
+  outline: none;
+`;
+RightArrow.displayName = 'RightArrow';
+
+
 const Title = styled.div`
   text-align: left;
   padding-left: 10px;
@@ -18,17 +65,6 @@ const Title = styled.div`
 `;
 Title.displayName = 'Title';
 
-const FullMenu = styled.div`
-  font-family: arial;
-  font-size: 14px;
-  color: #0073bb;
-  vertical-align: bottom;
-  position: fixed;
-  right: 75px;    
-  `;
-FullMenu.displayName = 'FullMenu';
-
-
 const MainContainer = styled.div`
   padding-left: 15px;
     .hoverOn {
@@ -39,7 +75,6 @@ const MainContainer = styled.div`
     }
 `;
 MainContainer.displayName = 'MainContainer';
-
 
 const PopularDishesContainer = styled.div`
   padding-top: 30px;
@@ -63,34 +98,6 @@ const PopularDishSpanHolder = styled.div`
   border-color: #999999;
   border-width: .5px;
 `;
-
-const TitleMenuContainer = styled.div`
-  display: flex;
-  align-items: flex-end;
-  position: fixed;
-`;
-TitleMenuContainer.displayName = 'TitleMenuContainer';
-
-const LeftArrow = styled.button`
-  height: 20px;
-  width: 30px;
-  border: none;
-  position: fixed;
-  right: 15px;
-  outline: none;
-`;
-LeftArrow.displayName = 'LeftArrow';
-
-const RightArrow = styled.button`
-  height: 20px;
-  width: 30px;
-  border: none;
-  position: fixed;
-  right: 40px;
-  outline: none;
-`;
-RightArrow.displayName = 'RightArrow';
-//********************************************** */
 
 class App extends React.Component {
   constructor(props) {
@@ -118,16 +125,16 @@ class App extends React.Component {
     // then use it to get restaurantName, then get data based on restaurantName
     const restaurantId = window.location.pathname.slice(1);
 
-    axios.get(`/restaurants/${restaurantId}`)
+    axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
       .then(data => {
         this.setState({ restaurantName: data.data[0].name });
-        return axios.get(`/menus/${this.state.restaurantName}`)
+        return axios.get(`http://localhost:2000/menus/${this.state.restaurantName}`)
           .then(data => {
             this.setState({ dishes: data.data });
             var top10 = this.getTop10(data.data);
             // console.log('top10>>>', top10);
             this.setState({ top10: top10 });
-          })
+          });
       });
 
   }
@@ -153,7 +160,6 @@ class App extends React.Component {
 
   // * methods for styling ////////////////////////////////////
   scroll(direction) {
-    console.log('SCROLL WAS INVOKED');
     let far = $('.popDishesContainer').width() / 2 * direction;
     let pos = $('.popDishesContainer').scrollLeft() + far;
     $('.popDishesContainer').animate({ scrollLeft: pos }, 350)
@@ -161,7 +167,6 @@ class App extends React.Component {
 
   showModal() {
     this.setState({ show: true });
-    console.log('SHOW MODAL GETTING INVOKED');
   };
 
   hideModal() {
@@ -190,7 +195,7 @@ class App extends React.Component {
             <Title>Popular Dishes</Title>
             <FullMenu onClick={this.showModal} className={this.state.fullMenuHover ? 'hoverOn' : 'hoverOff'}>Full Menu</FullMenu>
             <RightArrow onClick={this.scroll.bind(null, -1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollLeft.png" alt="scroll right icon" width="100%" height="100%"></img></RightArrow>
-            <LeftArrow onClick={this.scroll.bind(null, 1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollRight.png" alt="scroll left icon" width="100%" height="100%"></img></LeftArrow>
+            <LeftArrow className="leftArrow" onClick={this.scroll.bind(null, 1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollRight.png" alt="scroll left icon" width="100%" height="100%"></img></LeftArrow>
           </TitleMenuContainer>
 
           <PopularDishesContainer className='popDishesContainer'>
@@ -210,9 +215,14 @@ class App extends React.Component {
       <MainContainer id="main">
         <TitleMenuContainer>
           <Title>Popular Dishes</Title>
-          <FullMenu className="fullMenu" onClick={this.showModal} onMouseEnter={this.setTrueFullMenuHover} onMouseLeave={this.setFalseFullMenuHover} className={this.state.fullMenuHover ? 'hoverOn' : 'hoverOff'}>Full Menu</FullMenu>
-          <RightArrow onClick={this.scroll.bind(null, -1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollLeft.png" alt="scroll right icon" width="100%" height="100%"></img></RightArrow>
-          <LeftArrow onClick={this.scroll.bind(null, 1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollRight.png" alt="scroll left icon" width="100%" height="100%"></img></LeftArrow>
+          <FullMenuAndArrowsContainer>
+            <FullMenu className="fullMenu" onClick={this.showModal} onMouseEnter={this.setTrueFullMenuHover} onMouseLeave={this.setFalseFullMenuHover} className={this.state.fullMenuHover ? 'hoverOn' : 'hoverOff'}>Full Menu</FullMenu>
+            <ArrowsContainer>
+              <RightArrow onClick={this.scroll.bind(null, -1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollLeft.png" alt="scroll right icon" width="100%" height="100%"></img></RightArrow>
+              <LeftArrow onClick={this.scroll.bind(null, 1)}><img src="https://s3.us-east-2.amazonaws.com/yelpsfphotos/scrollRight.png" alt="scroll left icon" width="100%" height="100%"></img></LeftArrow>
+            </ArrowsContainer>
+          </FullMenuAndArrowsContainer>
+
         </TitleMenuContainer>
 
         <PopularDishesContainer className='popDishesContainer'>

@@ -8,6 +8,7 @@ import axios from 'axios';
 const MainDiv = styled.div`
 display: flex;
 flex-direction: column;
+height: 100%;
 `;
 MainDiv.displayName = 'MainDiv';
 
@@ -81,10 +82,10 @@ class PopularDish extends React.Component {
   }
 
   getPhotoData() {
-    axios.get(`/menus/${this.props.restaurantName}/dishes/${this.props.dish.id}/photos`)
+    axios.get(`http://localhost:2000/menus/${this.props.restaurantName}/dishes/${this.props.dish.id}/photos`)
       .then(data => {
         this.setState({ numberOfPhotos: data.data.length });
-        return axios.get(`/photos/${data.data[0].photos_id}`)
+        return axios.get(`http://localhost:2000/photos/${data.data[0].photos_id}`)
           .then(photoData => {
             this.setState({ imgurl: photoData.data[0].url });
           });

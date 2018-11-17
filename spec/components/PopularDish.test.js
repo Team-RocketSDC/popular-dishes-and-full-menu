@@ -1,14 +1,6 @@
 import React from 'react';
-import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
-import App from '../../client/src/components/App.jsx';
 import PopularDish from '../../client/src/components/PopularDish.jsx';
-import Modal from '../../client/src/components/FullMenuModal.jsx';
-import { create } from "react-test-renderer";
-// const axios = require.requireMock('axios');
-import jest from 'jest-mock';
-import PropTypes from 'prop-types';
-// import mockAxios from 'axios';
 
 describe('PopularDish', () => {
   const exampleDish1 = {

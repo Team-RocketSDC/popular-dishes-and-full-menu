@@ -1,12 +1,8 @@
 import React from 'react';
-import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
 import App from '../../client/src/components/App.jsx';
 import PopularDish from '../../client/src/components/PopularDish.jsx';
 import Modal from '../../client/src/components/FullMenuModal.jsx';
-import { create } from "react-test-renderer";
-const axios = require.requireMock('axios');
-import jest from 'jest-mock';
 
 describe('App', () => {
 
@@ -55,9 +51,11 @@ describe('App', () => {
     expect(wrapper.exists('.hoverOff')).toBe(true);
     expect(wrapper.exists('.hoverOn')).toBe(false);
     wrapper.find('FullMenu').simulate('mouseEnter');
+    expect(wrapper.state('fullMenuHover')).toBe(true);
     expect(wrapper.exists('.hoverOn')).toBe(true);
     expect(wrapper.exists('.hoverOff')).toBe(false);
     wrapper.find('FullMenu').simulate('mouseLeave');
+    expect(wrapper.state('fullMenuHover')).toBe(false);
     expect(wrapper.exists('.hoverOff')).toBe(true);
     expect(wrapper.exists('.hoverOn')).toBe(false);
   });
@@ -100,28 +98,25 @@ describe('App', () => {
     expect(wrapper.instance().props.restaurantName).not.toBe('nulla');
   });
 
-  // NOT WORKING...even though scroll method is getting invoked...spy not tracking
-  // it('invokes scroll when you click on arrow left', () => {
-  // const wrapper = mount(<App />);
-  // const spy = jest.fn(wrapper, 'scroll');
-  // wrapper.find('LeftArrow').simulate('click');
-  // expect(spy).toHaveBeenCalled();
+  it('should change state of show to true when showModal is called & false when hideModal is called', () => {
+    const wrapper = shallow(<App restaurantName='iure' />);
+    const instance = wrapper.instance();
+    instance.showModal();
+    expect(wrapper.state('show')).toBe(true);
+    instance.hideModal();
+    expect(wrapper.state('show')).toBe(false);
+  });
 
-  // const wrapper = mount(<App />);
-  // const spy = jest.spyOn(wrapper.instance(), 'scroll');
-  // wrapper.find('FullMenu').simulate('click');
-  // expect(spy).toHaveBeenCalled();
-  // });
+  it('should change state of fullMenuHover to true when setTrueFullMenuHover is called & false when setFalseFullMenuHover is called', () => {
+    const wrapper = shallow(<App restaurantName='iure' />);
+    const instance = wrapper.instance();
+    instance.setTrueFullMenuHover();
+    expect(wrapper.state('fullMenuHover')).toBe(true);
+    instance.hideModal();
+    expect(wrapper.state('fullMenuHover')).toBe(false);
+  });
 
-  // ALSO doesn't work...
-  // it('calls showModal when FullMenu is clicked', () => {
-  //   const wrapper = mount(<App />);
-  //   const mockshowModal = jest.fn(wrapper.showModal);
-  //   wrapper.find('FullMenu').simulate('click');
-  //   expect(mockshowModal).toBeCalled();
-  // });
-
-  // IN PROGRESS...
+  // IN PROGRESS ...
   // it('should on componentDidMount, fetch Dishes and update state.dishes', async () => {
   //   const resp = {
   //     data: [

@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "popular-dishes-and-full-menu",
   "version": "",
   "description": "",
   "author": "",
@@ -10,17 +10,19 @@
   "scripts": {
     "react-dev": "webpack -d --watch",
     "start": "nodemon server/index.js",
-    "seed-database": "node database/faker.js && mysql -u root < database/schema.sql",
-    "test": "jest --coverage"
+    "create-database": "mysql -u root < database/schema.sql",
+    "seed-database": "node database/faker.js",
+    "test": "jest --coverage",
+    "images": "node database/seedpics.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "faker": "^4.1.0",
+    "fs": "0.0.1-security",
     "jest": "^23.6.0",
     "jquery": "^3.3.1",
     "mysql": "^2.16.0",
-    "puppeteer": "^1.9.0",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "underscore": "^1.9.1",
@@ -44,11 +46,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "jest-mock": "^23.2.0",
-    "prop-types": "^15.6.2",
-    "react-test-renderer": "^16.6.0",
     "regenerator-runtime": "^0.12.1",
-    "sinon": "^7.1.1",
     "styled-components": "^4.0.3",
     "webpack-cli": "^3.1.2"
   },

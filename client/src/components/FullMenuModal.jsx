@@ -17,19 +17,22 @@ const MainDiv = styled.div`
   }
 
   .closeButton{
-    font-size: 10px;
+    font-size: 20px;
     position: fixed;
     right: 0px;
     margin-right: 10%;
     padding-top: 1%;
     color: white;
     font-weight: bold;
+    height: 100%;
+    width: auto;
   }
 
   .rowAcrossTop{
     background: rgba(20, 20, 20, 0);
     width: 100%;
     height: 20px;
+    padding-bottom: 2%;
   }
 
   .display-block{
@@ -43,7 +46,7 @@ const MainDiv = styled.div`
   .modal-main {
     position:fixed;
     background: rgba(20, 20, 20, 0.75);
-    z-index: 8;
+    z-index: 1008;
     width: 100%;
     height: auto;
     overflow: scroll;
@@ -68,7 +71,7 @@ const MainDiv = styled.div`
     margin-right: 10%;
     padding: 5%;
     position: relative;
-    z-index: 10;
+    z-index: 1010;
     background: white;
   }
 `;
