@@ -11,14 +11,14 @@ stream.on('error', (err) => {
   }
 });
 
-var restaurantCSV = 'Id,Name';
+var restaurantCSV = 'Name';
 var i = 1;
 while (i < 10000001) {
   if (i % 10000 === 0) {
     stream.write(restaurantCSV);
     restaurantCSV = '';
   }
-  restaurantCSV += '\n' + i + ',' + '"' + faker.company.companyName() + '"';
+  restaurantCSV += '\n' + '"' + faker.company.companyName() + '"';
   i++;
 }
 stream.write(restaurantCSV);
