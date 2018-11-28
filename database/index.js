@@ -1,41 +1,44 @@
-const mysql = require('mysql');
+const { Client } = require('pg');
 
-const connection = mysql.createConnection({
+const client = new Client({
+  user: 'postgres',
   host: 'localhost',
-  database: 'yumpSF',
-  user: 'root',
+  database: 'yelprocket',
+  password: '',
+  port: 6666,
 });
+client.connect();
 
 function addRestaurant(name, callback) {
-  connection.query('INSERT INTO restaurants (name) VALUES (?)', [name], callback);
+  client.query('INSERT INTO restaurants (name) VALUES ($1)', [name], callback);
 }
 
-function updateRestaurant(newName, name, callback) {
-  connection.query('UPDATE restaurants SET name = ? WHERE name = ?', [newName, name], callback);
+function updateRestaurant(newName, id, callback) {
+  client.query('UPDATE restaurants SET name = ($1) WHERE id = ($2)', [newName, id], callback);
 }
 
-function deleteRestaurant(name, callback) {
-  connection.query('DELETE FROM restaurants WHERE name = ?', [name], callback);
+function deleteRestaurant(id, callback) {
+  client.query('DELETE FROM restaurants WHERE restaurant_id = ($1)', [id], callback);
 }
 
-function getDishes(restaurantName, callback) {
-  const queryStr = 'SELECT * from dishes WHERE restaurant_id IN (SELECT id from restaurants where name = ?)';
-  connection.query(queryStr, [restaurantName], callback);
+function getDishes(restaurantId, callback) {
+  const queryStr = 'SELECT * from dishes WHERE restaurant_id = ($1)';
+  client.query(queryStr, [restaurantId], callback);
 }
 
-function getPhotosForDish(restaurantName, dishId, callback) {
-  const queryStr = 'SELECT * from dishes_photos WHERE dishes_id = ?';
-  connection.query(queryStr, [dishId], callback);
+function getPhotosForDish(dishId, callback) {
+  const queryStr = 'SELECT * from dishes_photos WHERE dishes_id = ($1)';
+  client.query(queryStr, [dishId], callback);
 }
 
 function getPhotoData(photoId, callback) {
-  const queryStr = 'SELECT * FROM photos WHERE id = ?';
-  connection.query(queryStr, [photoId], callback);
+  const queryStr = 'SELECT * FROM photos WHERE id = ($1)';
+  client.query(queryStr, [photoId], callback);
 }
 
 function getRestaurantName(restaurantId, callback) {
-  const queryStr = 'SELECT name FROM restaurants WHERE id = ?';
-  connection.query(queryStr, [restaurantId], callback);
+  const queryStr = 'SELECT name FROM restaurants WHERE id = ($1)';
+  client.query(queryStr, [restaurantId], callback);
 }
 
 module.exports = {
@@ -46,5 +49,5 @@ module.exports = {
   deleteRestaurant,
   getRestaurantName,
   updateRestaurant,
-  connection,
+  client,
 };

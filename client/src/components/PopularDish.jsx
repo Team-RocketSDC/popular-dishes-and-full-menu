@@ -121,7 +121,7 @@ class PopularDish extends React.Component {
 
   render() {
 
-    const { restaurantName, dish } = this.props;
+    const { dish } = this.props;
 
     let photoWord = 'photos';
     if (this.state.numberOfPhotos === 1) {

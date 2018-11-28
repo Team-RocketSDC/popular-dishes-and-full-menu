@@ -10,7 +10,7 @@ CREATE TABLE dishes (
   id SERIAL NOT NULL PRIMARY KEY,
   restaurant_id INTEGER NOT NULL,
   name VARCHAR(200) NOT NULL,
-  price MONEY NOT NULL,
+  price NUMERIC(6,2) NOT NULL,
   description VARCHAR(400) NOT NULL,
   reviews INTEGER NOT NULL 
 );

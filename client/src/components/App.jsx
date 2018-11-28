@@ -107,12 +107,18 @@ class App extends React.Component {
       // if want to pass down restaurant name from Index.jsx, could do so here... but we are pulling from browswer url to integrate with team
       // restaurantName: this.props.restaurantName,
       restaurantName: 'est',
+      restaurantId: '',
       dishes: initialDishData,
       top10: initialDishData,
       show: false,
       fullMenuHover: false,
     };
+
+    this.updateState = this.updateState.bind(this);
     this.getDishes = this.getDishes.bind(this);
+    this.getRestaurantId = this.getRestaurantId.bind(this);
+    this.getRestaurantName = this.getRestaurantName.bind(this);
+    this.getTop10 = this.getTop10.bind(this);
     this.scroll = this.scroll.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -120,29 +126,69 @@ class App extends React.Component {
     this.setFalseFullMenuHover = this.setFalseFullMenuHover.bind(this);
   }
 
-  getDishes() {
-    // first need to use the restaurantId in the url path, 
-    // then use it to get restaurantName, then get data based on restaurantName
-    const restaurantId = window.location.pathname.slice(1);
-
-    axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
-      .then(data => {
-        this.setState({ restaurantName: data.data[0].name });
-        return axios.get(`http://localhost:2000/menus/${this.state.restaurantName}`)
-          .then(data => {
-            this.setState({ dishes: data.data });
-            var top10 = this.getTop10(data.data);
-            // console.log('top10>>>', top10);
-            this.setState({ top10: top10 });
-          });
-      });
-
+  componentDidMount() {
+    this.updateState();
   }
 
-  getTop10(dishes) {
-    // returns an array of the top 10 dishesObjects ranked by # of reviews
+  // getDishes() {
+  //   const restaurantId = window.location.pathname.slice(1);
+  //   this.setState({ restaurantId: restaurantId }, () => {
+  //     axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
+  //       .then((res) => {
+  //         this.setState({ restaurantName: res.data[0].name }, () => {
+  //           axios.get(`http://localhost:2000/menus/${restaurantId}`)
+  //             .then((data) => {
+  //               console.log('data from inside second get request: ', data.data);
+  //               this.setState({
+  //                 dishes: data.data,
+  //                 top10: this.getTop10(data.data) });
+  //             });
+  //         });
+  //       });
+  //   });
+  // }
 
-    var compare = (a, b) => {
+  getRestaurantId() {
+    console.log('getRestaurantId');
+    const restId = window.location.pathname.slice(1);
+    return new Promise((resolve) => {
+      this.setState({
+        restaurantId: restId,
+      }, () => resolve());
+    });
+  }
+
+  getRestaurantName() {
+    console.log('getRestaurantName');
+    const { restaurantId } = this.state;
+    return axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
+      .then((data) => {
+        this.setState({ restaurantName: data.data[0].name });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  getDishes() {
+    console.log('getDishes');
+    const { restaurantId } = this.state;
+    return axios.get(`http://localhost:2000/menus/${restaurantId}`)
+      .then((data) => {
+        this.setState({
+          dishes: data.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  getTop10() {
+    console.log('getTop10')
+    // returns an array of the top 10 dishesObjects ranked by # of reviews
+    const { dishes } = this.state;
+    const compare = (a, b) => {
       const reviewsA = a.reviews;
       const reviewsB = b.reviews;
 
@@ -154,8 +200,19 @@ class App extends React.Component {
       }
       return comparison;
     };
-    var sortedDishes = dishes.sort(compare).reverse();
-    return sortedDishes.slice(0, 10);
+    const sortedDishes = dishes.sort(compare).reverse();
+    this.setState({
+      top10: sortedDishes.slice(0, 10),
+    });
+  }
+
+updateState() {
+  console.log('updateState');
+    this.getRestaurantId()
+      .then(() => this.getRestaurantName())
+      .then(() => this.getDishes())
+      .then(() => this.getTop10())
+      .catch(console.log);
   }
 
   // * methods for styling ////////////////////////////////////
@@ -167,27 +224,22 @@ class App extends React.Component {
 
   showModal() {
     this.setState({ show: true });
-  };
+  }
 
   hideModal() {
     this.setState({ show: false, fullMenuHover: false });
-  };
+  }
 
   setTrueFullMenuHover() {
     this.setState({ fullMenuHover: true });
   }
+
   setFalseFullMenuHover() {
     this.setState({ fullMenuHover: false });
   }
 
-  // *  /////////////////////////////////////////////////////
-
-  componentDidMount() {
-    this.getDishes();
-  }
 
   render() {
-
     if (this.state.show) {
       return (
         <MainContainer id='main'>
@@ -201,14 +253,14 @@ class App extends React.Component {
           <PopularDishesContainer className='popDishesContainer'>
             {this.state.top10.map((dishObj) => (
               <PopularDishSpanHolder key={dishObj.id} id={dishObj.id} className='popularDishSpan'>
-                <PopularDish restaurantName={this.state.restaurantName} dish={dishObj} />
+                <PopularDish restaurantName={this.state.restaurantId} dish={dishObj} />
               </PopularDishSpanHolder>)
             )}
           </PopularDishesContainer>
 
-          <Modal show={this.state.show} handleClose={this.hideModal} restaurantName={this.state.restaurantName} fullMenu={this.state.dishes} />
+          <Modal show={this.state.show} handleClose={this.hideModal} restaurantName={this.state.restaurantId} fullMenu={this.state.dishes} />
 
-        </MainContainer >
+        </MainContainer>
       );
     }
     return (

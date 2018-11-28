@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -20,36 +21,36 @@ app.get('/:restaurantId', (req, res) => {
 
 app.get('/restaurants/:restaurantId', (req, res) => {
   const id = req.params.restaurantId;
-
   db.getRestaurantName(id, (error, results) => {
     if (error) {
       res.status(500).send(error.message);
     } else {
-      res.status(200).send(results);
+      res.status(200).send(results.rows);
     }
   });
 });
 
-app.get('/menus/:restaurantName', (request, response) => {
-  const { restaurantName } = request.params;
-  db.getDishes(restaurantName, (error, results) => {
+app.get('/menus/:restaurantId', (request, response) => {
+  const { restaurantId } = request.params;
+  db.getDishes(restaurantId, (error, results) => {
     if (error) {
+      console.log(error);
       response.status(500).send(error.message);
     } else {
-      response.status(200).send(results);
+      response.status(200).send(results.rows);
     }
   });
 });
 
 // the length of results we get back tells us how many different photos
 // there are for the given dish at the given restaurant
-app.get('/menus/:restaurantName/dishes/:dishId/photos', (request, response) => {
-  const { restaurantName, dishId } = request.params;
-  db.getPhotosForDish(restaurantName, dishId, (error, results) => {
+app.get('/menus/:restaurantId/dishes/:dishId/photos', (request, response) => {
+  const { dishId } = request.params;
+  db.getPhotosForDish(dishId, (error, results) => {
     if (error) {
       response.status(500).send(error.message);
     } else {
-      response.status(200).send(results);
+      response.status(200).send(results.rows);
     }
   });
 });
@@ -61,7 +62,7 @@ app.get('/photos/:photoid', (request, response) => {
     if (error) {
       response.status(500).send(error.message);
     } else {
-      response.status(200).send(results);
+      response.status(200).send(results.rows);
     }
   });
 });
@@ -77,7 +78,7 @@ app.post('/restaurants', (request, response) => {
 });
 
 app.put('/restaurants', (request, response) => {
-  db.updateRestaurant(request.body.newName, request.body.name, (error) => {
+  db.updateRestaurant(request.body.newName, request.body.id, (error) => {
     if (error) {
       response.status(500).send(error.message);
     } else {
@@ -87,7 +88,7 @@ app.put('/restaurants', (request, response) => {
 });
 
 app.delete('/restaurants', (request, response) => {
-  db.deleteRestaurant(request.body.name, (error) => {
+  db.deleteRestaurant(request.body.id, (error) => {
     if (error) {
       response.status(500).send(error.message);
     } else {
