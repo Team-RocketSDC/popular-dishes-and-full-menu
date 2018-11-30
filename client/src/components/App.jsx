@@ -104,8 +104,6 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      // if want to pass down restaurant name from Index.jsx, could do so here... but we are pulling from browswer url to integrate with team
-      // restaurantName: this.props.restaurantName,
       restaurantName: 'est',
       restaurantId: '',
       dishes: initialDishData,
@@ -130,26 +128,7 @@ class App extends React.Component {
     this.updateState();
   }
 
-  // getDishes() {
-  //   const restaurantId = window.location.pathname.slice(1);
-  //   this.setState({ restaurantId: restaurantId }, () => {
-  //     axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
-  //       .then((res) => {
-  //         this.setState({ restaurantName: res.data[0].name }, () => {
-  //           axios.get(`http://localhost:2000/menus/${restaurantId}`)
-  //             .then((data) => {
-  //               console.log('data from inside second get request: ', data.data);
-  //               this.setState({
-  //                 dishes: data.data,
-  //                 top10: this.getTop10(data.data) });
-  //             });
-  //         });
-  //       });
-  //   });
-  // }
-
   getRestaurantId() {
-    console.log('getRestaurantId');
     const restId = window.location.pathname.slice(1);
     return new Promise((resolve) => {
       this.setState({
@@ -159,9 +138,8 @@ class App extends React.Component {
   }
 
   getRestaurantName() {
-    console.log('getRestaurantName');
     const { restaurantId } = this.state;
-    return axios.get(`http://localhost:2000/restaurants/${restaurantId}`)
+    return axios.get(`/restaurants/${restaurantId}`)
       .then((data) => {
         this.setState({ restaurantName: data.data[0].name });
       })
@@ -171,9 +149,8 @@ class App extends React.Component {
   }
 
   getDishes() {
-    console.log('getDishes');
     const { restaurantId } = this.state;
-    return axios.get(`http://localhost:2000/menus/${restaurantId}`)
+    return axios.get(`/menus/${restaurantId}`)
       .then((data) => {
         this.setState({
           dishes: data.data,
@@ -185,8 +162,6 @@ class App extends React.Component {
   }
 
   getTop10() {
-    console.log('getTop10')
-    // returns an array of the top 10 dishesObjects ranked by # of reviews
     const { dishes } = this.state;
     const compare = (a, b) => {
       const reviewsA = a.reviews;
@@ -207,7 +182,6 @@ class App extends React.Component {
   }
 
 updateState() {
-  console.log('updateState');
     this.getRestaurantId()
       .then(() => this.getRestaurantName())
       .then(() => this.getDishes())

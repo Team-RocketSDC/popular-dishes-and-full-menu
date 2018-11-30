@@ -4,8 +4,8 @@ const client = new Client({
   user: 'postgres',
   host: 'localhost',
   database: 'yelprocket',
-  password: '',
-  port: 6666,
+  password: 'elderscrolls',
+  port: 5432,
 });
 client.connect();
 
